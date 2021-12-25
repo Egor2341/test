@@ -82,17 +82,12 @@ def load_image(name, color_key=None):
         image.set_colorkey(color_key)
     else:
         image = image.convert_alpha()
+
     return image
 
 
 all_sprites = pygame.sprite.Group()
-sprite = pygame.sprite.Sprite()
-sprite.image = load_image("box.png")
-sprite.rect = sprite.image.get_rect()
 start_screen()
-all_sprites.add(sprite)
-sprite.rect.x = random.randrange(WIDTH)
-sprite.rect.y = random.randrange(HEIGHT)
 
 # функция финиша: закрывает игру
 def finish():
@@ -103,13 +98,12 @@ def finish():
 # генерация новых яблок
 def make_new_apple():
     sprite = pygame.sprite.Sprite()
-    sprite.image = load_image("box.png")
+    sprite.image = load_image("apple.png", -1)
     sprite.rect = sprite.image.get_rect()
     all_sprites.add(sprite)
-    sprite.rect.x = random.randrange(WIDTH)
-    sprite.rect.y = random.randrange(HEIGHT)
+    sprite.rect.x = random.randrange(0, WIDTH - SIZE)
+    sprite.rect.y = random.randrange(0, HEIGHT - SIZE)
     apple = sprite
-
     return apple
 
 
@@ -179,13 +173,12 @@ def main():
 
         # в противном случае - генерируем яблоко
         if snake.colliderect(apple):
+            apple.kill()
             apple = make_new_apple()
             add_part_of_snake(snake, snake_tail, head)
         display.fill((50, 50, 50))
         text = font.render(str(scores), False, (150, 150, 150))
         display.blit(text, (10, 10))
-        all_sprites.draw(display)
-        pygame.draw.rect(display, RED, apple)
         all_sprites.draw(display)
         draw_snake(snake, snake_tail, head)
         pygame.display.update()
