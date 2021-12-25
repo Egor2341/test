@@ -64,9 +64,7 @@ def end_screen():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 finish()
-            elif event.type == pygame.KEYDOWN or \
-                    event.type == pygame.MOUSEBUTTONDOWN:
-                return
+
         pygame.display.flip()
         clock.tick(fps)
 
@@ -88,11 +86,13 @@ def load_image(name, color_key=None):
 
 
 all_sprites = pygame.sprite.Group()
-apple = pygame.sprite.Sprite()
-apple.image = load_image("box.png")
-apple.rect = apple.image.get_rect()
+sprite = pygame.sprite.Sprite()
+sprite.image = load_image("box.png")
+sprite.rect = sprite.image.get_rect()
 start_screen()
-all_sprites.add(apple)
+all_sprites.add(sprite)
+sprite.rect.x = random.randrange(WIDTH)
+sprite.rect.y = random.randrange(HEIGHT)
 
 # функция финиша: закрывает игру
 def finish():
@@ -102,9 +102,13 @@ def finish():
 
 # генерация новых яблок
 def make_new_apple():
-    apple_x = random.randint(0, WIDTH - SIZE)
-    apple_y = random.randint(0, HEIGHT - SIZE)
-    apple = all_sprites.draw(display)
+    sprite = pygame.sprite.Sprite()
+    sprite.image = load_image("box.png")
+    sprite.rect = sprite.image.get_rect()
+    all_sprites.add(sprite)
+    sprite.rect.x = random.randrange(WIDTH)
+    sprite.rect.y = random.randrange(HEIGHT)
+    apple = sprite
 
     return apple
 
@@ -180,8 +184,9 @@ def main():
         display.fill((50, 50, 50))
         text = font.render(str(scores), False, (150, 150, 150))
         display.blit(text, (10, 10))
-        
+        all_sprites.draw(display)
         pygame.draw.rect(display, RED, apple)
+        all_sprites.draw(display)
         draw_snake(snake, snake_tail, head)
         pygame.display.update()
         fps_clock.tick(fps)
